@@ -1,6 +1,8 @@
 defmodule Apr.MixProject do
   use Mix.Project
 
+  # USE KIEX for versioning
+
   def project do
     [
       app: :apr,

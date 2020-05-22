@@ -93,4 +93,18 @@ defmodule Apr.Views.CommerceOrderSlackViewTest do
     slack_view = CommerceOrderSlackView.render(@fraud_theme_subscription, event, "order.submitted")
     refute is_nil(slack_view.text)
   end
+  test "special special cases" do
+    event = Fixtures.commerce_order_event("submitted", %{"items_total_cents" => 10_000_000})
+
+    slack_view = CommerceOrderSlackView.render(@fraud_theme_subscription, event, "order.submitted")
+    refute is_nil(slack_view.text)
+  end
+
+  test "TO DO: currency code break down and cents over 10" do
+    event = Fixtures.commerce_order_event("submitted", %{"items_total_cents" => 10_000_000, "currency_code" => "EUR"})
+
+    slack_view = CommerceOrderSlackView.render(@fraud_theme_subscription, event, "order.submitted")
+    # IO.puts(slack_view)
+    refute is_nil(slack_view.text)
+  end
 end

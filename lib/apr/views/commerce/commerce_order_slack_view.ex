@@ -10,22 +10,24 @@ defmodule Apr.Views.CommerceOrderSlackView do
 
   def render(
         %Subscription{theme: "fraud"},
-        %{"verb" => verb, "properties" => %{"items_total_cents" => items_total_cents, "currency_code" => "EUR", "mode" => mode}},
+        %{"verb" => "approved", "properties" => %{"items_total_cents" => items_total_cents, "currency_code" => "EUR", "mode" => "offer"}},
         _routing_key
       )
       # above 9500
       # any currency
       # on offers
-      when items_total_cents < 10_000_00 or verb != "submitted",
+      # when approved?
+      when items_total_cents < 9500_00,
       do: nil
+
 
   def render(
         %Subscription{theme: "fraud"},
-        %{"verb" => verb, "properties" => %{"items_total_cents" => items_total_cents, "currency_code" => currency_code, "mode" => mode}},
+        %{"verb" => verb, "properties" => %{"items_total_cents" => items_total_cents, "mode" => mode}},
         _routing_key
       )
       # buy now mode
-      when items_total_cents < 3_000_00 or verb != "submitted" or mode == "offer" or currency_code != "EUR",
+      when items_total_cents < 3_000_00 or verb != "submitted" or mode == "offer",
       do: nil
 
   def render(_subscription, event, routing_key) do

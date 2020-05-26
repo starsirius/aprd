@@ -93,18 +93,17 @@ defmodule Apr.Views.CommerceOrderSlackViewTest do
     slack_view = CommerceOrderSlackView.render(@fraud_theme_subscription, event, "order.submitted")
     refute is_nil(slack_view.text)
   end
-  test "special special cases" do
-    event = Fixtures.commerce_order_event("submitted", %{"items_total_cents" => 10_000_000})
 
-    slack_view = CommerceOrderSlackView.render(@fraud_theme_subscription, event, "order.submitted")
-    refute is_nil(slack_view.text)
-  end
+  # TODO: regardless of currency?
+  test "returns message for subscription with fraud theme when offer over 10K is approved" do
+    # {mode => "offer"} is breaking everything
+    # changing event to approved is breaking everything
+    # @subscription makes everything work! (vs. @fraud_theme_subscription)
+    # the fraud theme is breaking with the changes we want
+    event = Fixtures.commerce_order_event("approved", %{"items_total_cents" => 11000_00, "currency_code" => "EUR"})
 
-  test "TO DO: currency code break down and cents over 10" do
-    event = Fixtures.commerce_order_event("submitted", %{"items_total_cents" => 10_000_000, "currency_code" => "EUR"})
-
-    slack_view = CommerceOrderSlackView.render(@fraud_theme_subscription, event, "order.submitted")
-    # IO.puts(slack_view)
+    slack_view = CommerceOrderSlackView.render(@fraud_theme_subscription, event, "order.approved")
+    assert slack_view.text == "halp!"
     refute is_nil(slack_view.text)
   end
 end
